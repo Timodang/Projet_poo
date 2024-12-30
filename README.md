@@ -23,6 +23,8 @@ retraité afin de comparer les résultats avec ceux du code.
 
 ## Points d'amélioration
 
+Nous avons un bug sur le streamlit concernant l'affichage des graphiques de performance cumulé. Nous ne sommes pas parvenus à débogguer et affichons donc le graphique depuis la main plutôt que depuis l'application. 
+
 Pour aller plus loin dans le développement du code, il faudrait donner à l'utilisateur la possibilité de sélectionner l'univers d'investissement pour les séries d'AQR pour chaque
 fonds importé. L'implémentation actuelle importe les fichiers une seule fois et récupère directement les séries pour un univers d'investissement donné ('global' dans la main). 
 
