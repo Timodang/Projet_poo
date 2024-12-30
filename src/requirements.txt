@@ -12,3 +12,4 @@ os
 sys
 logging
 pathlib
+streamlit
