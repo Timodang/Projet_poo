@@ -23,27 +23,55 @@ class Visualization:
     # S'assurer que l'index est trié
     df = df.sort_index()
 
+    # Déterminer la plage de dates commune
+    min_date = df.index.min()
+    max_date = df.index.max()
+
+    # Filtrer les données pour la plage commune
+    df = df.loc[min_date:max_date]
+
     return df
+
+  def _get_common_date_range(self, *dataframes):
+    """
+    Trouve la plage de dates commune à tous les dataframes
+    """
+    min_dates = []
+    max_dates = []
+
+    for df in dataframes:
+      if isinstance(df, pd.Series):
+        df = df.to_frame()
+      df_dates = pd.to_datetime(df.index if isinstance(df.index, pd.DatetimeIndex)
+                                else df['Date'] if 'Date' in df.columns
+      else df[df.columns[0]])
+      min_dates.append(df_dates.min())
+      max_dates.append(df_dates.max())
+
+    return max(min_dates), min(max_dates)
 
   def plot_performance(self, nav_series):
     """
     Trace la performance cumulée des fonds
     """
-    data = self._standardize_data(nav_series)
+    # Convertir explicitement l'index en datetime si ce n'est pas déjà fait
+    data = nav_series.copy()
+    if 'Date' in data.columns:
+      data.set_index('Date', inplace=True)
+    data.index = pd.to_datetime(data.index)
+
+    # Trier l'index
+    data = data.sort_index()
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
-    # Remplacer les valeurs infinies ou NaN par 0
-    data = data.replace([np.inf, -np.inf], np.nan)
-    data = data.fillna(method='ffill')
-
     # Calculer les rendements pour chaque fonds
     for col in data.columns:
-      # Calculer les rendements en évitant les problèmes de division par zéro
-      series = data[col]
-      returns = series.pct_change()
-      cumul_returns = (1 + returns).cumprod() - 1
-      ax.plot(cumul_returns.index, cumul_returns.values, label=col)
+      series = data[col].dropna()
+      if not series.empty:
+        returns = series.pct_change().fillna(0)
+        cumul_returns = (1 + returns).cumprod() - 1
+        ax.plot(series.index, cumul_returns, label=col)
 
     # Formater l'axe des dates
     locator = mdates.AutoDateLocator()
@@ -68,6 +96,8 @@ class Visualization:
       return None
 
     data = self._standardize_data(nav_data)
+    min_date, max_date = self._get_common_date_range(data)
+    data = data.loc[min_date:max_date]
 
     # Calculer les rendements
     returns = data.pct_change().fillna(0)
@@ -101,15 +131,14 @@ class Visualization:
     """
     Trace le beta glissant des fonds par rapport au benchmark
     """
-    # Standardiser les données des fonds
+    # Standardiser les données
     data = self._standardize_data(nav_data)
+    bench = self._standardize_data(pd.DataFrame(benchmark_data))
 
-    # Standardiser le benchmark
-    if isinstance(benchmark_data, pd.Series):
-      bench = pd.DataFrame(benchmark_data)
-      bench = self._standardize_data(bench)
-    else:
-      bench = self._standardize_data(pd.DataFrame(benchmark_data))
+    # Trouver la plage de dates commune
+    min_date, max_date = self._get_common_date_range(data, bench)
+    data = data.loc[min_date:max_date]
+    bench = bench.loc[min_date:max_date]
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
@@ -118,18 +147,12 @@ class Visualization:
     bench_returns = bench.iloc[:, 0].pct_change().fillna(0)
 
     for fund in fund_returns.columns:
-      # S'assurer que nous avons des dates communes
-      common_dates = fund_returns.index.intersection(bench_returns.index)
-      if len(common_dates) > window:
-        fund_ret = fund_returns.loc[common_dates, fund]
-        bench_ret = bench_returns.loc[common_dates]
+      # Calculer le beta glissant
+      rolling_cov = fund_returns[fund].rolling(window).cov(bench_returns)
+      rolling_var = bench_returns.rolling(window).var()
+      rolling_beta = rolling_cov / rolling_var
 
-        # Calculer le beta glissant
-        rolling_cov = fund_ret.rolling(window).cov(bench_ret)
-        rolling_var = bench_ret.rolling(window).var()
-        rolling_beta = rolling_cov / rolling_var
-
-        ax.plot(rolling_beta.index, rolling_beta.values, label=fund)
+      ax.plot(rolling_beta.index, rolling_beta.values, label=fund)
 
     # Formater l'axe des dates
     locator = mdates.AutoDateLocator()
