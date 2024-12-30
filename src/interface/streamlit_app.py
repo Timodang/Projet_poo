@@ -120,6 +120,10 @@ def main():
         except Exception as e:
           st.error(f"Error loading fund {i + 1}: {str(e)}")
 
+    list_fund = []
+    for name, fund in portfolio.funds:
+      list_fund.append(fund)
+
     st.header("2. Benchmark and Factor Selection")
     col1, col2 = st.columns(2)
 
@@ -272,11 +276,6 @@ def main():
 
         col1, col2 = st.columns(2)
         with col1:
-          st.subheader("Performance Cumulée")
-          fig_perf = viz.plot_performance(data['nav_data'])
-          st.pyplot(fig_perf)
-
-        with col2:
           st.subheader("Métriques de Risque")
           fig_risk = viz.plot_risk_metrics(data['stats_report'])
           st.pyplot(fig_risk)
@@ -289,25 +288,10 @@ def main():
           logger.warning(f"Could not generate heatmap: {str(e)}")
           st.warning("Impossible de générer la heatmap")
 
-        st.subheader("Analyses Glissantes")
-        window_size = st.slider("Fenêtre d'analyse glissante (jours)",
-                                min_value=30, max_value=252, value=60)
-
-        col3, col4 = st.columns(2)
-        with col3:
-          st.markdown("##### Corrélations Glissantes")
-          fig_corr = viz.plot_rolling_correlation(data['nav_data'], window=window_size)
-          if fig_corr is not None:
-            st.pyplot(fig_corr)
-          else:
-            st.info("Corrélations non disponibles - nécessite au moins 2 fonds")
-
-        with col4:
-          st.markdown("##### Beta Glissant")
-          fig_beta = viz.plot_rolling_beta(data['nav_data'],
-                                           data['benchmark_nav'], window=window_size)
-          st.pyplot(fig_beta)
-
+        with col2:
+          st.subheader("Performance Cumulée")
+          fig_perf = viz.plot_performance(data['nav_data'])
+          st.pyplot(fig_perf)
   finally:
     # Nettoyage des ficheirs temporaires
     for temp_path in temp_paths:
@@ -322,7 +306,7 @@ def main():
     """Fonction pour afficher les visualisations avec gestion des figures"""
 
     # Performance
-    fig_perf = viz.plot_performance(data['nav_data'])
+    fig_perf = viz.plot_performance(list_fund)
     if fig_perf is not None:
       st.subheader("Performance Cumulée")
       st.pyplot(fig_perf)
@@ -341,36 +325,6 @@ def main():
         st.pyplot(fig_heatmap)
     except Exception as e:
       st.warning("Impossible de générer la heatmap")
-
-    # Analyses glissantes
-    st.subheader("Analyses Glissantes")
-    window_size = st.slider(
-      "Fenêtre d'analyse glissante (jours)",
-      min_value=30,
-      max_value=252,
-      value=60
-    )
-
-    col3, col4 = st.columns(2)
-
-    with col3:
-      st.markdown("##### Corrélations Glissantes")
-      if len(data['nav_data'].columns) >= 2:
-        fig_corr = viz.plot_rolling_correlation(data['nav_data'], window=window_size)
-        if fig_corr is not None:
-          st.pyplot(fig_corr)
-      else:
-        st.info("Corrélations non disponibles - nécessite au moins 2 fonds")
-
-    with col4:
-      st.markdown("##### Beta Glissant")
-      fig_beta = viz.plot_rolling_beta(
-        data['nav_data'],
-        data['benchmark_nav'],
-        window=window_size
-      )
-      if fig_beta is not None:
-        st.pyplot(fig_beta)
 
 
 
