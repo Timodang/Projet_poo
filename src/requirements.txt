@@ -1,0 +1,9 @@
+pandas
+numpy
+datetime
+statsmodels
+seaborn
+matplotlib
+plotly
+unittest
+openpyxl
