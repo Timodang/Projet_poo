@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-# Configure logging
+# Configuration logging
 logging.basicConfig(
   level=logging.INFO,
   format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -23,14 +23,14 @@ DEFAULT_AQR_FILES = {
 }
 DEFAULT_BENCHMARK_FILE = os.path.join(DEFAULT_DATA_DIR, 'S&P 500 tracker.csv')
 
-# Add path for imports
+# Ajout du path pour import
 sys.path.append(str(BASE_DIR))
 
 from src.app.data_loader import NavLoader, AqrLoader
 from src.app.portfolio import Portfolio
 from src.app.visualization import Visualization
 
-# Streamlit Configuration
+# Configuration Streamlit
 st.set_page_config(
   page_title="Portfolio Analysis Framework",
   layout="wide",
@@ -208,19 +208,19 @@ def main():
             if st.session_state.rf is None or st.session_state.aqr_factors is None:
               raise ValueError("AQR factors or risk-free rate data not loaded properly")
 
-            # Create dictionary structure for AQR data
+            # Création d'un dictionnaire pour AQR data
             aqr_dict = {
               'Daily': st.session_state.aqr_factors if frequency == "Daily" else None,
               'Monthly': st.session_state.aqr_factors if frequency == "Monthly" else None
             }
 
-            # Create dictionary structure for RF data
+            # Création d'un dictionnaire pour RF data
             rf_dict = {
               'Daily': st.session_state.rf if frequency == "Daily" else None,
               'Monthly': st.session_state.rf if frequency == "Monthly" else None
             }
 
-            # Store analysis results
+            # Stockage des résultats
             st.session_state.analysis_data = {
               'stats_report': portfolio.reporting(rf=rf_dict, benchmark=benchmark_data),
               'factor_analysis': portfolio.factorial_analysis(dict_aqr=aqr_dict),
@@ -234,7 +234,7 @@ def main():
             st.error(f"Error in analysis: {str(e)}")
             return
 
-    # Display results section
+    # Affichage des résultats par section
     if st.session_state.analysis_complete:
       data = st.session_state.analysis_data
 
@@ -309,7 +309,7 @@ def main():
           st.pyplot(fig_beta)
 
   finally:
-    # Cleanup temporary files
+    # Nettoyage des ficheirs temporaires
     for temp_path in temp_paths:
       try:
         if os.path.exists(temp_path):
