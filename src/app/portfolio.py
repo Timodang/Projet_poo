@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 from src.app.data_loader import NavLoader
-from src.app.descriptive_stats import DescriptiveStatistics2
+from src.app.descriptive_stats import DescriptiveStatistics
 from src.app.factor_analysis import FactorAnalysis
 
 class Portfolio:
@@ -159,13 +159,13 @@ class Portfolio:
       df_data_to_calculate_stats = pd.merge(df_fund, benchmark, on = 'Date', how = 'inner')
       df_data_to_calculate_stats.columns = ['Date', 'NAV Fund', 'RF', 'Bench']
 
-      stats_fund = DescriptiveStatistics2(df_data_to_calculate_stats['NAV Fund'],
+      stats_fund = DescriptiveStatistics(df_data_to_calculate_stats['NAV Fund'],
                                           df_data_to_calculate_stats['RF'],
                                           periodicity)
 
       # Construction d'un objet "stats_bench" pour calculer les rendements du benchmark
       # qui sont utilisés pour calculer certaines statistiques
-      stats_bench = DescriptiveStatistics2(df_data_to_calculate_stats['Bench'],
+      stats_bench = DescriptiveStatistics(df_data_to_calculate_stats['Bench'],
                                            df_data_to_calculate_stats['RF'],
                                            periodicity)
       bench_returns = stats_bench.calculate_daily_returns

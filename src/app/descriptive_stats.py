@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-class DescriptiveStatistics2:
+class DescriptiveStatistics:
     """
     Classe utilisée pour calculer des statistiques descriptives
     sur les performances et les risques d'un fonds.
