@@ -1,6 +1,10 @@
+import matplotlib.pyplot as plt
+
+
 from app.data_loader import NavLoader
 from app.data_loader import AqrLoader
 from app.portfolio import Portfolio
+from app.visualization import Visualization
 
 '''
 Première étape : Importation du benchmark et construction du portefeuille
@@ -46,5 +50,22 @@ for fund_summary in ptf_summary:
 '''
 Cinquième étape : visualisation via une application streamlit à 
 lancer à l'aide de la commande suivante 
-streamlit run src/interface/streamlit_app.py
+streamlit run path src/interface/streamlit_app.py
 '''
+
+
+"""
+Sixième étape : Trace des performance lié à l'implémentation streamlit et 
+l'impossibilité de tracer les performance donc affichage dans la main
+"""
+viz = Visualization()
+
+# Préparer la liste des DataFrames pour plot_performance
+nav_series_list = []
+for name, fund in port.funds.items():
+    nav_series_list.append(fund)
+
+# Tracer les performances
+print("\nGénération du graphique des performances...")
+fig_perf = viz.plot_performance(nav_series_list)
+plt.show()
