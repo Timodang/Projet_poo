@@ -121,7 +121,7 @@ def main():
           st.error(f"Error loading fund {i + 1}: {str(e)}")
 
     list_fund = []
-    for name, fund in portfolio.funds:
+    for fund in portfolio.funds:
       list_fund.append(fund)
 
     st.header("2. Benchmark and Factor Selection")
