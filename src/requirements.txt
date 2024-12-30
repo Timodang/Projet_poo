@@ -7,3 +7,8 @@ matplotlib
 plotly
 unittest
 openpyxl
+tempfile
+os
+sys
+logging
+pathlib
