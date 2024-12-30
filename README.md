@@ -7,7 +7,7 @@ L'objectif de ce projet est de construire un framework d'analyse de portefeuille
 - data_loader : classe permettant d'importer et de convertir en dataframe des tableaux de données contenant les NAV des fonds que l'utilisateur souhaite ajouter à son portefeuille et les séries de facteurs d'AQR utilisées pour réaliser une analyse factorielle.
 - descriptive_stats : classe permettant de calculer un ensemble de statistiques descriptives (perf, vol, ...).
 - factor_analysis : classe permettant de réaliser une analyse factorielle.
-- portfolio : classe permettant de construire un portefeuille et d'effectuer / de renvoyer les métriques sur les fonds utilisés.
+- portfolio : classe permettant de construire un portefeuille et d'effectuer les calculs / de renvoyer les métriques sur les fonds utilisés.
 - visualisation : classe permettant de réaliser des graphiques / tableaux pour synthétiser l'analyse.
 
 Les principaux fichiers de ce projet sont : 
