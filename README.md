@@ -28,8 +28,6 @@ Nous avons un bug sur le streamlit concernant l'affichage des graphiques de perf
 Pour aller plus loin dans le développement du code, il faudrait donner à l'utilisateur la possibilité de sélectionner l'univers d'investissement pour les séries d'AQR pour chaque
 fonds importé. L'implémentation actuelle importe les fichiers une seule fois et récupère directement les séries pour un univers d'investissement donné ('global' dans la main). 
 
-Nous avons eu des difficultés avec la gestion des dates sur les graphiques streamlit. Les dates en abcisse ne sont pas exhaustives.
-
 ## Remarques
 
 L'exécution du code prend un certain temps (entre 3 et 5 minutes pour avoir des résultats). Ce temps d'exécution provient de l'import des séries quotidiennes de facteurs d'AQR. 
