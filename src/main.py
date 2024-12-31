@@ -50,7 +50,7 @@ for fund_summary in ptf_summary:
 '''
 Cinquième étape : visualisation via une application streamlit à 
 lancer à l'aide de la commande suivante 
-streamlit run path src/interface/streamlit_app.py
+streamlit run src/interface/streamlit_app.py
 '''
 
 
